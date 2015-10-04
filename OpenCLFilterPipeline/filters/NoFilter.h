@@ -2,15 +2,14 @@
 
 #include "BaseFilter.h"
 
-class MeanFilter_CPU : public BaseFilter
+class NoFilter : public BaseFilter
 {
 public:
-	MeanFilter_CPU();
-	~MeanFilter_CPU();
+	NoFilter() : BaseFilter() {}
+	virtual ~NoFilter() {}
 
 	virtual void Apply(const Image &input, Image &output) override;
 	virtual void BuildParameterList() override;
-	virtual std::string Name() const override { return "Mean Filter CPU"; }
+	virtual std::string Name() const override { return "Dummy Filter"; }
 
-private:
 };

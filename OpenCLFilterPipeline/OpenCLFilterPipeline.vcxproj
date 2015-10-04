@@ -156,6 +156,7 @@
     <ClCompile Include="filters\BaseFilter.cpp" />
     <ClCompile Include="filters\FilterParameter.cpp" />
     <ClCompile Include="filters\MeanFilters.cpp" />
+    <ClCompile Include="filters\NoFilter.cpp" />
     <ClCompile Include="glwindow.cpp" />
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="main.cpp" />
@@ -244,6 +245,7 @@ endlocal
     <ClInclude Include="filters\FilterParameter.h" />
     <ClInclude Include="filters\BaseFilter.h" />
     <ClInclude Include="filters\MeanFilters.h" />
+    <ClInclude Include="filters\NoFilter.h" />
     <ClInclude Include="filters\ParametersFactories\EmptyParametersFactory.h" />
     <ClInclude Include="filters\ParametersFactories\IParametersFactory.h" />
     <ClInclude Include="GeneratedFiles\ui_mainwindow.h" />

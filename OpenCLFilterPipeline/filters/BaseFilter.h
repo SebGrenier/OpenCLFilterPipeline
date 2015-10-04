@@ -1,5 +1,7 @@
 #pragma once
 #include "FilterParameter.h"
+#include "../Image.h"
+#include <string>
 
 class BaseFilter
 {
@@ -7,9 +9,10 @@ public:
 	BaseFilter();
 	virtual ~BaseFilter();
 
-	virtual void Apply(unsigned char image_data, int image_width, int image_height, int image_depth) = 0;
+	virtual void Apply(const Image &input, Image &output) = 0;
 	virtual void BuildParameterList() = 0;
+	virtual std::string Name() const = 0;
 
-private:
+protected:
 	CFilterParameterMap *_parameters;
 };
