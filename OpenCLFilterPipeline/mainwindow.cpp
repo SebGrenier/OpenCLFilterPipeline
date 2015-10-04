@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "FiltersHolder.h"
 
 #include <QFileDialog>
 #include <QString>
@@ -17,10 +18,13 @@ MainWindow::MainWindow(QWidget *parent) :
     _gl_window->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
 	OpenCLUtils::Instance()->InitOpenCL();
+	FiltersHolder::Instance()->InitFilters();
 
 	// Init the rest of the widgets depending on OpenCL
 	_device_widget = new DeviceWidget();
 	_central_widget_layout->addWidget(_device_widget, 0, 1);
+	_filter_widget = new FilterWidget();
+	_central_widget_layout->addWidget(_filter_widget, 1, 1);
 }
 
 MainWindow::~MainWindow()

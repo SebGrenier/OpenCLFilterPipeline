@@ -1,20 +1,17 @@
 #include "FilterPanel.h"
-#include "../application.h"
-#include "../Logger/Logger.h"
 #include <QSpinBox>
 #include <QDoubleSpinBox>
 #include <QTime>
 #include <QVariant>
 
 
-CFilterPanel::CFilterPanel( QWidget *Parent, const CFilterParameterMap &Params, const QString &FilterName )
+CFilterPanel::CFilterPanel( QWidget *Parent, CFilterParameterMap *Params, const QString &FilterName )
     : QGroupBox       ( Parent     )
     , m_Name          ( FilterName )
     , m_Params        ( Params     )
     , m_ParamLayout   ( 0          )
     , m_ButtonLayout  ( 0          )
     , m_ResetButton   ( 0          )
-    , m_ActivateButton( 0          )
     , m_SignalMapper  ( 0          )
 {
     m_ParamLayout = new QFormLayout( this );
@@ -32,17 +29,11 @@ CFilterPanel::CFilterPanel( QWidget *Parent, const CFilterParameterMap &Params, 
     m_ResetButton = new QPushButton( 0 );
     m_ResetButton->setText( "Reset" );
 
-    // Add a final button to activate the filter
-    m_ActivateButton = new QPushButton( 0 );
-    m_ActivateButton->setText( "Apply" );
-
     m_ButtonLayout->addWidget( m_ResetButton );
-    m_ButtonLayout->addWidget( m_ActivateButton );
 
     m_ParamLayout->addRow( m_ButtonLayout );
 
     connect( m_ResetButton, SIGNAL( clicked() ), this, SLOT( on_ResetClicked() ) );
-    connect( m_ActivateButton, SIGNAL( clicked() ), this, SLOT( on_ApplyClicked() ) );
 }
 
 CFilterPanel::~CFilterPanel( void )
@@ -53,8 +44,8 @@ CFilterPanel::~CFilterPanel( void )
 
 void CFilterPanel::BuildPanel( void )
 {
-    CFilterParameterMap::Iterator It = m_Params.Begin( );
-    CFilterParameterMap::Iterator End = m_Params.End( );
+    CFilterParameterMap::Iterator It = m_Params->Begin( );
+    CFilterParameterMap::Iterator End = m_Params->End( );
 
     QString ParamName;
     QString Description;
@@ -125,58 +116,7 @@ void CFilterPanel::AddWidget( QWidget *Widget,
     Widget->setToolTip( Description );
     m_WidgetList.insert( Widget, ParamName );
     m_ParamLayout->addRow( ParamName, Widget );
-}
-
-void CFilterPanel::on_ApplyClicked( void )
-{
-    GetFilterParameter( );
-
-    Notify( );
-}
-
-const CFilterParameterMap& CFilterPanel::GetFilterParameter( void )
-{
-    QMap< QWidget*, QString >::iterator It = m_WidgetList.begin( );
-    QMap< QWidget*, QString >::iterator End = m_WidgetList.end( );
-
-    AFilterParameter *Param = 0;
-    QSpinBox *WidgetInt = 0;
-    QDoubleSpinBox *WidgetDouble = 0;
-    QCheckBox *WidgetBool = 0;
-    for( ; It != End; ++It )
-    {
-        Param = m_Params.GetParameter( It.value( ) );
-        if( Param )
-        {
-            // Get the widget value based on the parameter type
-            switch( Param->GetType( ) )
-            {
-            case AFilterParameter::FP_INT :
-                WidgetInt = static_cast<QSpinBox*>( It.key( ) );
-                if( WidgetInt )
-                    CFilterParameterInterpreter<int>::Assign( Param, WidgetInt->value( ) );
-                break;
-            case AFilterParameter::FP_FLOAT :
-                WidgetDouble = static_cast<QDoubleSpinBox*>( It.key( ) );
-                if( WidgetDouble )
-                    CFilterParameterInterpreter<float>::Assign( Param, WidgetDouble->value( ) );
-                break;
-            case AFilterParameter::FP_DOUBLE :
-                WidgetDouble = static_cast<QDoubleSpinBox*>( It.key( ) );
-                if( WidgetDouble )
-                    CFilterParameterInterpreter<double>::Assign( Param, WidgetDouble->value( ) );
-                break;
-            case AFilterParameter::FP_BOOL :
-                WidgetBool = static_cast<QCheckBox*>( It.key( ) );
-                if( WidgetBool )
-                    CFilterParameterInterpreter<bool>::Assign( Param, WidgetBool->isChecked( ) );
-            default :
-                break;
-            }
-        }
-    }
-
-    return m_Params;
+	connect(Widget, SIGNAL(changed(QWidget*)), this, SLOT(on_WidgetChanged(QWidget*)));
 }
 
 void CFilterPanel::ResetFilterParameters( void )
@@ -190,7 +130,7 @@ void CFilterPanel::ResetFilterParameters( void )
     QCheckBox *WidgetBool = 0;
     for( ; It != End; ++It )
     {
-        Param = m_Params.GetParameter( It.value( ) );
+        Param = m_Params->GetParameter( It.value( ) );
         if( Param )
         {
             // Get the widget value based on the parameter type
@@ -229,10 +169,10 @@ void CFilterPanel::on_ResetClicked( void )
 
 void CFilterPanel::CheckAndLinkToggle( QWidget *Widget, const QString &ParamName )
 {
-    if( m_Params.IsToggledParameter( ParamName ) )
+    if( m_Params->IsToggledParameter( ParamName ) )
     {
         // If the parameter is toggleable, get the toggling parameter
-        const QString TogglingParamName = m_Params.GetTogglingParameter( ParamName );
+        const QString TogglingParamName = m_Params->GetTogglingParameter( ParamName );
 
         // Get the widget associated with the toggling parameter
         QMap< QWidget*, QString >::iterator It = m_WidgetList.begin( );
@@ -270,4 +210,44 @@ void CFilterPanel::on_ToggleClicked( QWidget *Widget )
     {
         (*It)->setEnabled( WidgetBool->isChecked( ) );
     }
+}
+
+void CFilterPanel::on_WidgetChanged(QWidget* Widget)
+{
+	if (!m_WidgetList.contains(Widget))
+		return;
+
+	AFilterParameter *Param = 0;
+	QSpinBox *WidgetInt = 0;
+	QDoubleSpinBox *WidgetDouble = 0;
+	QCheckBox *WidgetBool = 0;
+	Param = m_Params->GetParameter(m_WidgetList[Widget]);
+	if (Param)
+	{
+		// Get the widget value based on the parameter type
+		switch (Param->GetType())
+		{
+		case AFilterParameter::FP_INT:
+			WidgetInt = static_cast<QSpinBox*>(Widget);
+			if (WidgetInt)
+				CFilterParameterInterpreter<int>::Assign(Param, WidgetInt->value());
+			break;
+		case AFilterParameter::FP_FLOAT:
+			WidgetDouble = static_cast<QDoubleSpinBox*>(Widget);
+			if (WidgetDouble)
+				CFilterParameterInterpreter<float>::Assign(Param, WidgetDouble->value());
+			break;
+		case AFilterParameter::FP_DOUBLE:
+			WidgetDouble = static_cast<QDoubleSpinBox*>(Widget);
+			if (WidgetDouble)
+				CFilterParameterInterpreter<double>::Assign(Param, WidgetDouble->value());
+			break;
+		case AFilterParameter::FP_BOOL:
+			WidgetBool = static_cast<QCheckBox*>(Widget);
+			if (WidgetBool)
+				CFilterParameterInterpreter<bool>::Assign(Param, WidgetBool->isChecked());
+		default:
+			break;
+		}
+	}
 }
