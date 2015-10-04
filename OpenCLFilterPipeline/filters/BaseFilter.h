@@ -13,6 +13,8 @@ public:
 	virtual void BuildParameterList() = 0;
 	virtual std::string Name() const = 0;
 
+	CFilterParameterMap* Parameters() { return _parameters; }
+
 protected:
 	CFilterParameterMap *_parameters;
 };

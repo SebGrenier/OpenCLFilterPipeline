@@ -26,6 +26,11 @@ void FiltersHolder::InitFilters()
 	_filters.push_back(new NoFilter());
 	_filters.push_back(new MeanFilter_CPU());
 
+	for (auto it = _filters.begin(); it != _filters.end(); ++it)
+	{
+		(*it)->BuildParameterList();
+	}
+
 	_current_filter_index = 0;
 }
 

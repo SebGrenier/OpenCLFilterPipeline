@@ -16,6 +16,9 @@ private slots:
 	void OnFilterListActivated(int index);
 
 private:
+	void CreateFilterPanel();
+
+private:
 	QVBoxLayout *_vertical_layout;
 	QComboBox *_filter_list;
 	CFilterPanel *_filter_panel;

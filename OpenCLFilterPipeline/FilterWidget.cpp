@@ -3,6 +3,7 @@
 
 FilterWidget::FilterWidget(QWidget* parent)
 	: QWidget(parent)
+	, _filter_panel(0)
 {
 	_vertical_layout = new QVBoxLayout(this);
 	_filter_list = new QComboBox();
@@ -34,4 +35,16 @@ FilterWidget::~FilterWidget()
 void FilterWidget::OnFilterListActivated(int index)
 {
 	FiltersHolder::Instance()->SetCurrentFilterIndex(index);
+}
+
+void FilterWidget::CreateFilterPanel()
+{
+	if (_filter_panel)
+	{
+		_vertical_layout->removeWidget(_filter_panel);
+		delete _filter_panel;
+	}
+
+	auto filter = FiltersHolder::Instance()->CurrentFilter();
+	_filter_panel = new CFilterPanel(0, filter->Parameters(), QString::fromStdString(filter->Name()));
 }

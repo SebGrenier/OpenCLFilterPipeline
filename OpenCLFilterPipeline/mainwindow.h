@@ -26,7 +26,8 @@ private slots:
 private:
     Ui::MainWindow *ui;
 
-    QGridLayout *_central_widget_layout;
+    QHBoxLayout *_central_widget_layout;
+	QVBoxLayout *_right_widget_layout;
     GLWindow *_gl_window;
 	DeviceWidget *_device_widget;
 	FilterWidget *_filter_widget;
