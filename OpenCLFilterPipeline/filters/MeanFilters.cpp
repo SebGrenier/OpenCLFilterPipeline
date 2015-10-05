@@ -188,8 +188,8 @@ void MeanFilter_CPU::Apply(const Image &input, Image &output)
 		compteurY_R.resize(radius + 1, 0);
 		accuY_G.resize(radius + 1, 0);
 		compteurY_G.resize(radius + 1, 0);
-		accuY_G.resize(radius + 1, 0);
-		compteurY_G.resize(radius + 1, 0);
+		accuY_B.resize(radius + 1, 0);
+		compteurY_B.resize(radius + 1, 0);
 		index = 0;
 
 		if (i - radius >= 0){
