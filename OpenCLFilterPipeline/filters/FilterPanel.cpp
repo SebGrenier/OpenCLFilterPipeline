@@ -42,6 +42,7 @@ CFilterPanel::~CFilterPanel( void )
         delete m_SignalMapper;
 }
 
+// TODO : Use signal_mapper in each case, not just bool
 void CFilterPanel::BuildPanel( void )
 {
     CFilterParameterMap::Iterator It = m_Params->Begin( );
@@ -71,6 +72,7 @@ void CFilterPanel::BuildPanel( void )
             WidgetInt->setMaximum( CFilterParameterInterpreter< int >::Convert( Param->GetMax( ) ) );
             AddWidget( WidgetInt, ParamName, Description );
             CheckAndLinkToggle( WidgetInt, ParamName );
+			connect(WidgetInt, SIGNAL(valueChanged(int)), this, SLOT(on_SpinBoxIntChanged(int)));
             break;
         case AFilterParameter::FP_FLOAT :
             FloatParam = static_cast< CFilterFloat* >( Param );
@@ -82,6 +84,7 @@ void CFilterPanel::BuildPanel( void )
             WidgetDouble->setMaximum( CFilterParameterInterpreter< double >::Convert( Param->GetMax( ) ) );
             AddWidget( WidgetDouble, ParamName, Description );
             CheckAndLinkToggle( WidgetDouble, ParamName );
+			connect(WidgetDouble, SIGNAL(valueChanged(double)), this, SLOT(on_SpinBoxDoubleChanged(double)));
             break;
         case AFilterParameter::FP_DOUBLE :
             DoubleParam = static_cast< CFilterDouble* >( Param );
@@ -93,6 +96,7 @@ void CFilterPanel::BuildPanel( void )
             WidgetDouble->setMaximum( CFilterParameterInterpreter< double >::Convert( Param->GetMax( ) ) );
             AddWidget( WidgetDouble, ParamName, Description );
             CheckAndLinkToggle( WidgetDouble, ParamName );
+			connect(WidgetDouble, SIGNAL(valueChanged(double)), this, SLOT(on_SpinBoxDoubleChanged(double)));
             break;
         case AFilterParameter::FP_BOOL :
             WidgetBool = new QCheckBox( 0 );
@@ -116,7 +120,6 @@ void CFilterPanel::AddWidget( QWidget *Widget,
     Widget->setToolTip( Description );
     m_WidgetList.insert( Widget, ParamName );
     m_ParamLayout->addRow( ParamName, Widget );
-	connect(Widget, SIGNAL(changed(QWidget*)), this, SLOT(on_WidgetChanged(QWidget*)));
 }
 
 void CFilterPanel::ResetFilterParameters( void )
@@ -210,6 +213,25 @@ void CFilterPanel::on_ToggleClicked( QWidget *Widget )
     {
         (*It)->setEnabled( WidgetBool->isChecked( ) );
     }
+	on_WidgetChanged(WidgetBool);
+}
+
+void CFilterPanel::on_SpinBoxIntChanged(int value)
+{
+	QWidget *sender_widget = static_cast<QWidget*>(sender());
+	if (sender_widget != 0)
+	{
+		on_WidgetChanged(sender_widget);
+	}
+}
+
+void CFilterPanel::on_SpinBoxDoubleChanged(double value)
+{
+	QWidget *sender_widget = static_cast<QWidget*>(sender());
+	if (sender_widget != 0)
+	{
+		on_WidgetChanged(sender_widget);
+	}
 }
 
 void CFilterPanel::on_WidgetChanged(QWidget* Widget)

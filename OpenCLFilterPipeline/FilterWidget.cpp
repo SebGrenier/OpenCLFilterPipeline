@@ -19,7 +19,9 @@ FilterWidget::FilterWidget(QWidget* parent)
 	_filter_list->setCurrentIndex(FiltersHolder::Instance()->CurrentFilterIndex());
 
 	// Connect signal to slot
-	connect(_filter_list, SIGNAL(activated()), this, SLOT(OnDeviceListActivated()));
+	connect(_filter_list, SIGNAL(activated(int)), this, SLOT(OnFilterListActivated(int)));
+
+	CreateFilterPanel();
 }
 
 FilterWidget::~FilterWidget()
@@ -35,6 +37,8 @@ FilterWidget::~FilterWidget()
 void FilterWidget::OnFilterListActivated(int index)
 {
 	FiltersHolder::Instance()->SetCurrentFilterIndex(index);
+
+	CreateFilterPanel();
 }
 
 void FilterWidget::CreateFilterPanel()
@@ -47,4 +51,5 @@ void FilterWidget::CreateFilterPanel()
 
 	auto filter = FiltersHolder::Instance()->CurrentFilter();
 	_filter_panel = new CFilterPanel(0, filter->Parameters(), QString::fromStdString(filter->Name()));
+	_vertical_layout->addWidget(_filter_panel);
 }

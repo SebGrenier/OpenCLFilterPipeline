@@ -26,6 +26,10 @@ public:
 private slots:
     void on_ResetClicked( void );
     void on_ToggleClicked( QWidget* Widget );
+	void on_SpinBoxIntChanged(int value);
+	void on_SpinBoxDoubleChanged(double value);
+
+private:
 	void on_WidgetChanged(QWidget* Widget);
 
 private:

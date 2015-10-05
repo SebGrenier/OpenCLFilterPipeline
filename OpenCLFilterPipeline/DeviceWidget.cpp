@@ -20,7 +20,7 @@ DeviceWidget::DeviceWidget(QWidget* parent)
 	_device_list->setCurrentIndex(OpenCLUtils::Instance()->GetCurrentDeviceIndex());
 
 	// Connect signal to slot
-	connect(_device_list, SIGNAL(activated()), this, SLOT(OnDeviceListActivated()));
+	connect(_device_list, SIGNAL(activated(int)), this, SLOT(OnDeviceListActivated(int)));
 }
 
 DeviceWidget::~DeviceWidget()

@@ -40,6 +40,7 @@ private:
 	Camera _camera;
 
 	Image *_image;
+	Image *_result;
     QMutex _image_access_mutex;
     GLuint _texture_id;
 };

@@ -1,4 +1,5 @@
 #include "glwindow.h"
+#include "FiltersHolder.h"
 #include <QImage>
 
 GLWindow::GLWindow(QWidget *parent)
@@ -27,6 +28,11 @@ GLWindow::~GLWindow()
     {
 		delete _image;
     }
+
+	if (_result)
+	{
+		delete _result;
+	}
 }
 
 void GLWindow::loadImage(const QString &path)
@@ -52,6 +58,8 @@ void GLWindow::loadImage(const QString &path)
     {
 		(*_image)[i] = bits[i];
     }
+
+	_result = new Image(*_image);
 
     _image_access_mutex.unlock();
 }
@@ -108,21 +116,24 @@ void GLWindow::paintGL()
     {
         if (_image)
         {
+			auto filter = FiltersHolder::Instance()->CurrentFilter();
+			filter->Apply(*_image, *_result);
+
             // Create a texture from the image data
             glBindTexture(GL_TEXTURE_2D, _texture_id);
             glActiveTexture(0);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _image->Width(), _image->Height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, _image->Data());
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _result->Width(), _result->Height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, _result->Data());
 
             glBegin(GL_QUADS);
 
 			glTexCoord2d(0, 1);
             glVertex2d(0, 0);
 			glTexCoord2d(1, 1);
-			glVertex2d((double)_image->Width(), 0);
+			glVertex2d((double)_result->Width(), 0);
 			glTexCoord2d(1, 0);
-			glVertex2d((double)_image->Width(), (double)_image->Height());
+			glVertex2d((double)_result->Width(), (double)_result->Height());
 			glTexCoord2d(0, 0);
-			glVertex2d(0, (double)_image->Height());
+			glVertex2d(0, (double)_result->Height());
 
             glEnd();
         }
