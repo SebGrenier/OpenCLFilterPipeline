@@ -8,6 +8,7 @@
 #include <QMutex>
 #include <QMouseEvent>
 #include <QTimer>
+#include <QElapsedTimer>
 
 class GLWindow : public QOpenGLWidget, public QOpenGLFunctions_2_1
 {
@@ -18,6 +19,9 @@ public:
     ~GLWindow();
 
     void loadImage(const QString &path);
+
+signals:
+	void filterFinished(qint64);
 
 protected:
     virtual void initializeGL();
@@ -43,6 +47,10 @@ private:
 	Image *_result;
     QMutex _image_access_mutex;
     GLuint _texture_id;
+
+	QElapsedTimer _filter_timer;
+	qint64 _filter_elapsed_time;
+	qint64 _counter;
 };
 
 #endif // GLWINDOW_H

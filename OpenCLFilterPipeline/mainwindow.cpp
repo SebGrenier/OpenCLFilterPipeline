@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     _gl_window = new GLWindow(0);
     _central_widget_layout->addWidget(_gl_window);
     _gl_window->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+	connect(_gl_window, SIGNAL(filterFinished(qint64)), this, SLOT(on_filterFinished(qint64)), Qt::QueuedConnection);
 
 	_right_widget_layout = new QVBoxLayout();
 	_central_widget_layout->addLayout(_right_widget_layout);
@@ -29,6 +30,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	_right_widget_layout->addWidget(_device_widget);
 	_filter_widget = new FilterWidget();
 	_right_widget_layout->addWidget(_filter_widget);
+
+	setStatusBarMessage("Loaded");
 }
 
 MainWindow::~MainWindow()
@@ -46,4 +49,17 @@ void MainWindow::on_actionOpen_triggered()
     {
 		_gl_window->loadImage(path);
     }
+}
+
+void MainWindow::on_filterFinished(qint64 elapsed)
+{
+	QString msg = "Filter time : ";
+	msg += QString::number(elapsed);
+	msg += " ms";
+	setStatusBarMessage(msg);
+}
+
+void MainWindow::setStatusBarMessage(const QString& message)
+{
+	statusBar()->showMessage(message);
 }

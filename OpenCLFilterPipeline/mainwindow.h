@@ -7,6 +7,7 @@
 #include "FilterWidget.h"
 #include <QMainWindow>
 #include <QLayout>
+#include <QStatusBar>
 
 namespace Ui {
     class MainWindow;
@@ -22,6 +23,10 @@ public:
 
 private slots:
     void on_actionOpen_triggered();
+	void on_filterFinished(qint64 elapsed);
+
+private:
+	void setStatusBarMessage(const QString &message);
 
 private:
     Ui::MainWindow *ui;

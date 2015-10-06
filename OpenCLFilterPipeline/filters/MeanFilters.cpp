@@ -216,19 +216,19 @@ void MeanFilter_CPU::Apply(const Image &input, Image &output)
 
 		if (borneSupx < width){
 			for (jj = 0; jj < (radius + 1) && jj < height; jj++){
-				valtemp_R = int(data[(jj * width + borneSupx)]);
+				valtemp_R = int(data[(jj * width + borneSupx) * depth]);
 				accuYMemoryR[jj] += valtemp_R;// accuYMemory[jj] + valtemp;
 				compteurYMemoryR[jj]++;// = compteurYMemory[jj] + 1;
 				somme_R += valtemp_R;
 				nbpt_R++;
 
-				valtemp_G = int(data[(jj * width + borneSupx)]);
+				valtemp_G = int(data[(jj * width + borneSupx) * depth + 1]);
 				accuYMemoryG[jj] += valtemp_G;// accuYMemory[jj] + valtemp;
 				compteurYMemoryG[jj]++;// = compteurYMemory[jj] + 1;
 				somme_G += valtemp_G;
 				nbpt_G++;
 
-				valtemp_B = int(data[(jj * width + borneSupx)]);
+				valtemp_B = int(data[(jj * width + borneSupx) * depth + 2]);
 				accuYMemoryB[jj] += valtemp_B;// accuYMemory[jj] + valtemp;
 				compteurYMemoryB[jj]++;// = compteurYMemory[jj] + 1;
 				somme_B += valtemp_B;

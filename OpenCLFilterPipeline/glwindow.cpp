@@ -1,6 +1,7 @@
 #include "glwindow.h"
 #include "FiltersHolder.h"
 #include <QImage>
+#include <chrono>
 
 GLWindow::GLWindow(QWidget *parent)
     : QOpenGLWidget(parent)
@@ -16,8 +17,10 @@ GLWindow::GLWindow(QWidget *parent)
 	setUpdateBehavior(QOpenGLWidget::NoPartialUpdate);
 	_camera.Set(0, 0, 1, 1, 1);
 
-	connect(&_refresh_timer, SIGNAL(timeout()), this, SLOT(update()));
+	connect(&_refresh_timer, SIGNAL(timeout()), this, SLOT(update()), Qt::UniqueConnection);
 	_refresh_timer.start(10);
+
+	_counter = 0;
 }
 
 GLWindow::~GLWindow()
@@ -117,7 +120,15 @@ void GLWindow::paintGL()
         if (_image)
         {
 			auto filter = FiltersHolder::Instance()->CurrentFilter();
+			_filter_timer.restart();
 			filter->Apply(*_image, *_result);
+			_filter_elapsed_time = _filter_timer.elapsed();
+			_counter += _filter_elapsed_time;
+			if (_counter >= 500)
+			{
+				emit filterFinished(_filter_elapsed_time);
+				_counter = 0;
+			}
 
             // Create a texture from the image data
             glBindTexture(GL_TEXTURE_2D, _texture_id);
@@ -187,7 +198,7 @@ void GLWindow::mouseMoveEvent(QMouseEvent* Event)
 
 	Event->accept();
 
-	update();
+	//update();
 }
 
 void GLWindow::wheelEvent(QWheelEvent* Event)
@@ -203,5 +214,5 @@ void GLWindow::wheelEvent(QWheelEvent* Event)
 
 	Event->accept();
 
-	update();
+	//update();
 }
