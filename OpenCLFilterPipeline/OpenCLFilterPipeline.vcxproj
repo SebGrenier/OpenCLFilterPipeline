@@ -170,6 +170,7 @@
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainwindow.cpp" />
+    <ClCompile Include="MathUtils.cpp" />
     <ClCompile Include="OpenCLUtils.cpp" />
     <ClCompile Include="Release\moc_DeviceWidget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -246,6 +247,7 @@ endlocal
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="cl.hpp" />
     <ClInclude Include="cl2.hpp" />
     <CustomBuild Include="DeviceWidget.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
@@ -286,7 +288,11 @@ endlocal
     </CustomBuild>
     <ClInclude Include="GeneratedFiles\ui_mainwindow.h" />
     <ClInclude Include="Image.h" />
+    <ClInclude Include="MathUtils.h" />
     <ClInclude Include="OpenCLUtils.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="MeanFilters.cl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

@@ -25,6 +25,11 @@ void FiltersHolder::InitFilters()
 {
 	_filters.push_back(new NoFilter());
 	_filters.push_back(new MeanFilter_CPU());
+	_filters.push_back(new CMeanFilter_GPU());
+	_filters.push_back(new CMeanFilter_GPU2());
+	_filters.push_back(new CMeanFilter_GPU1());
+	_filters.push_back(new CMeanFilter_GPUTranspose());
+	_filters.push_back(new CMeanFilter_GPUPad());
 
 	for (auto it = _filters.begin(); it != _filters.end(); ++it)
 	{

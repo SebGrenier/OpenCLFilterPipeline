@@ -11,6 +11,7 @@ Image::Image(int width, int height, int depth)
 {
 	_size = width * height * depth;
 	_data = new unsigned char[_size];
+	memset(_data, 0, _size);
 }
 
 Image::Image(const Image& other)
@@ -41,6 +42,16 @@ unsigned char& Image::operator[](int index)
 {
 	assert(index >= 0 && index < _size);
 	return _data[index];
+}
+
+unsigned char& Image::operator()(int i, int j, int k)
+{
+	return _data[(i * _width + j) * _depth + k];
+}
+
+const unsigned char& Image::operator()(int i, int j, int k) const
+{
+	return _data[(i * _width + j) * _depth + k];
 }
 
 void Image::Copy(const Image& other)

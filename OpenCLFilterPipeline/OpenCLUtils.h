@@ -1,10 +1,11 @@
 ﻿#pragma once
+#define __CL_ENABLE_EXCEPTIONS
 #define CL_HPP_ENABLE_EXCEPTIONS
 #define CL_HPP_TARGET_OPENCL_VERSION 110
 #define CL_HPP_MINIMUM_OPENCL_VERSION 110
 #include <string>
 #include <vector>
-#include "cl2.hpp"
+#include "cl.hpp"
 
 class OpenCLDevice
 {
@@ -13,8 +14,9 @@ public:
 	~OpenCLDevice();
 
 	inline const std::string& Name() const { return _name; }
-	inline cl::Device Device() { return _device; }
-	inline cl::CommandQueue CommandQueue() { return _command_queue; }
+	inline cl::Device Device() const { return _device; }
+	inline cl::CommandQueue CommandQueue() const { return _command_queue; }
+	inline cl::Context Context() const { return _context; }
 
 private:
 	std::string _name;
@@ -37,6 +39,12 @@ public:
 	void SetCurrentDeviceIndex(int index);
 
 	inline std::vector<OpenCLDevice>& Devices() { return _devices; }
+
+	cl::Program GetProgram(cl::Context &context, const std::string &file_path);
+	void BuildProgram(cl::Program &program, const std::vector<OpenCLDevice> &devices, const std::string &compile_options);
+	cl::Kernel GetKernel(cl::Program &program, const std::string &kernel_name);
+
+	std::string GetBuildLog(cl::Program &program);
 
 private:
 	OpenCLUtils();

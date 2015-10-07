@@ -19,6 +19,9 @@ public:
 
 	unsigned char& operator[] (int index);
 
+	unsigned char& operator() (int i, int j, int k);
+	const unsigned char& operator() (int i, int j, int k) const;
+
 private:
 	void Copy(const Image &other);
 

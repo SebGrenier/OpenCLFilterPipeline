@@ -128,6 +128,9 @@
     <ClCompile Include="Release\moc_FilterWidget.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="MathUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="glwindow.h">
@@ -188,5 +191,16 @@
     <ClInclude Include="FiltersHolder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="cl.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MathUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="MeanFilters.cl">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
